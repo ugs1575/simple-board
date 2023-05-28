@@ -27,17 +27,17 @@ public class Post {
 	private String title;
 
 	@Column(columnDefinition = "TEXT", nullable = false)
-	private String text;
+	private String content;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
 
 	@Builder
-	public Post(Long id, String title, String text, Member member) {
+	public Post(Long id, String title, String content, Member member) {
 		this.id = id;
 		this.title = title;
-		this.text = text;
+		this.content = content;
 		this.member = member;
 	}
 }
