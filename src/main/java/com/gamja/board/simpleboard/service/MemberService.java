@@ -3,6 +3,7 @@ package com.gamja.board.simpleboard.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gamja.board.simpleboard.dto.MemberResponseDto;
 import com.gamja.board.simpleboard.dto.MemberSaveRequestDto;
 import com.gamja.board.simpleboard.dto.MemberUpdateRequestDto;
 import com.gamja.board.simpleboard.entity.Member;
@@ -30,5 +31,12 @@ public class MemberService {
 		member.update(requestDto.getName());
 
 		return id;
+	}
+
+	public MemberResponseDto findById(Long id) {
+		Member member = memberRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다. id = " + id));
+
+		return new MemberResponseDto(member);
 	}
 }
