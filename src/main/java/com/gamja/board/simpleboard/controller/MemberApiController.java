@@ -31,14 +31,14 @@ public class MemberApiController {
  		return memberService.save(requestDto);
 	}
 
-	@PatchMapping("/{id}")
-	public Long update(@PathVariable Long id, @RequestBody @Valid MemberUpdateRequestDto requestDto) {
-		return memberService.update(id, requestDto);
+	@PatchMapping("/{memberId}")
+	public Long update(@PathVariable Long memberId, @RequestBody @Valid MemberUpdateRequestDto requestDto) {
+		return memberService.update(memberId, requestDto);
 	}
 
-	@GetMapping("/{id}")
-	public MemberResponseDto findMember(@PathVariable Long id) {
-		return memberService.findById(id);
+	@GetMapping("/{memberId}")
+	public MemberResponseDto findMember(@PathVariable Long memberId) {
+		return memberService.findById(memberId);
 	}
 
 }
