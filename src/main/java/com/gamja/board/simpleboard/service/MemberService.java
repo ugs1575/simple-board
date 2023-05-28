@@ -7,6 +7,7 @@ import com.gamja.board.simpleboard.dto.MemberResponseDto;
 import com.gamja.board.simpleboard.dto.MemberSaveRequestDto;
 import com.gamja.board.simpleboard.dto.MemberUpdateRequestDto;
 import com.gamja.board.simpleboard.entity.Member;
+import com.gamja.board.simpleboard.exception.NotFoundMemberException;
 import com.gamja.board.simpleboard.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class MemberService {
 	@Transactional
 	public Long update(Long id, MemberUpdateRequestDto requestDto) {
 		Member member = memberRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다. id = " + id));
+			.orElseThrow(NotFoundMemberException::new);
 
 		member.update(requestDto.getName());
 
@@ -35,7 +36,7 @@ public class MemberService {
 
 	public MemberResponseDto findById(Long id) {
 		Member member = memberRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다. id = " + id));
+			.orElseThrow(NotFoundMemberException::new);
 
 		return new MemberResponseDto(member);
 	}
