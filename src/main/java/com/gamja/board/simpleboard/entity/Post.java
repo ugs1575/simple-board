@@ -40,4 +40,8 @@ public class Post {
 		this.content = content;
 		this.member = member;
 	}
+
+	public void writePost(Member member) {
+		this.member = member;
+	}
 }
