@@ -2,6 +2,7 @@ package com.gamja.board.simpleboard.dto;
 
 import javax.validation.constraints.NotBlank;
 
+import com.gamja.board.simpleboard.entity.Member;
 import com.gamja.board.simpleboard.entity.Post;
 
 import lombok.Builder;
@@ -17,17 +18,21 @@ public class PostSaveRequestDto {
 
 	private String content;
 
+	private Member member;
+
 
 	@Builder
-	public PostSaveRequestDto(String title, String content) {
+	public PostSaveRequestDto(String title, String content, Member member) {
 		this.title = title;
 		this.content = content;
+		this.member = member;
 	}
 
-	public Post toEntity() {
+	public Post toEntity(Member member) {
 		return Post.builder()
 			.title(title)
 			.content(content)
+			.member(member)
 			.build();
 	}
 }
