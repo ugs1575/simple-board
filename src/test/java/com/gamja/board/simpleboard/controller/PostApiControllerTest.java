@@ -11,10 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.gamja.board.simpleboard.dto.PostSaveRequestDto;
+import com.gamja.board.simpleboard.dto.PostUpdateRequestDto;
 import com.gamja.board.simpleboard.entity.Member;
 import com.gamja.board.simpleboard.entity.Post;
 import com.gamja.board.simpleboard.repository.MemberRepository;
@@ -75,6 +78,39 @@ class PostApiControllerTest {
 		assertThat(all.get(0).getTitle()).isEqualTo(expectedTitle);
 		assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
 		assertThat(all.get(0).getMember().getId()).isEqualTo(member.getId());
+	}
+
+	@Test
+	public void 게시글을_수정한다() throws Exception {
+		//given
+		Post post = postRepository.save(Post.builder()
+			.title("제목1")
+			.content("글내용1")
+			.member(member)
+			.build());
+
+		String expectedTitle = "제목1_수정";
+		String expectedContent = "글내용1_수정";
+
+		PostUpdateRequestDto requestDto = PostUpdateRequestDto.builder()
+			.title(expectedTitle)
+			.content(expectedContent)
+			.build();
+
+		String url = "http://localhost:" + port + "/api/members/" + member.getId() + "/posts/" + post.getId();
+
+		HttpEntity<PostUpdateRequestDto> requestHttpEntity = new HttpEntity<>(requestDto);
+
+		//when
+		ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PATCH, requestHttpEntity, Long.class);
+
+		//then
+		assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(responseEntity.getBody()).isEqualTo(post.getId());
+
+		List<Post> all = postRepository.findAll();
+		assertThat(all.get(0).getTitle()).isEqualTo(expectedTitle);
+		assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
 	}
 
 
