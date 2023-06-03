@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gamja.board.simpleboard.dto.PostSaveRequestDto;
+import com.gamja.board.simpleboard.dto.PostUpdateRequestDto;
 import com.gamja.board.simpleboard.entity.Member;
 import com.gamja.board.simpleboard.entity.Post;
 import com.gamja.board.simpleboard.exception.CustomException;
@@ -30,5 +31,23 @@ public class PostService {
 		Post post = postRepository.save(requestDto.toEntity(member));
 
 		return post.getId();
+	}
+
+	@Transactional
+	public Long update(Long memberId, Long postId, PostUpdateRequestDto requestDto) {
+		Post post = postRepository.findByIdFetchJoin(postId)
+			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+		Member author = post.getMember();
+		if (!author.equals(member)) {
+			throw new CustomException(ErrorCode.POST_UNAUTHORIZED);
+		}
+
+		post.update(requestDto.getTitle(), requestDto.getContent());
+
+		return postId;
 	}
 }

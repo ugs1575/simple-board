@@ -41,7 +41,8 @@ public class Post {
 		this.member = member;
 	}
 
-	public void writePost(Member member) {
-		this.member = member;
+	public void update(String title, String content) {
+		this.title = title;
+		this.content = content;
 	}
 }
