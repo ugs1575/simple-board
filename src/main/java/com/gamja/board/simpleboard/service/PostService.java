@@ -56,7 +56,7 @@ public class PostService {
 		Post post = postRepository.findByIdFetchJoin(postId)
 			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-		return new PostResponseDto(post);
+		return PostResponseDto.of(post);
 	}
 
 	@Transactional

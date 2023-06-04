@@ -1,8 +1,11 @@
 package com.gamja.board.simpleboard.controller;
 
+import java.net.URI;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,24 +30,26 @@ public class MemberApiController {
 	private final MemberService memberService;
 
 	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public Long save(@RequestBody @Valid MemberSaveRequestDto requestDto) {
- 		return memberService.save(requestDto);
+	public ResponseEntity<Void> save(@RequestBody @Valid MemberSaveRequestDto requestDto) {
+		Long saveId = memberService.save(requestDto);
+		return ResponseEntity.created(URI.create("/api/members/" + saveId)).build();
 	}
 
 	@PatchMapping("/{memberId}")
-	public Long update(@PathVariable Long memberId, @RequestBody @Valid MemberUpdateRequestDto requestDto) {
-		return memberService.update(memberId, requestDto);
+	public ResponseEntity<Void> update(@PathVariable Long memberId, @RequestBody @Valid MemberUpdateRequestDto requestDto) {
+		memberService.update(memberId, requestDto);
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/{memberId}")
-	public MemberResponseDto findMember(@PathVariable Long memberId) {
-		return memberService.findById(memberId);
+	public ResponseEntity<MemberResponseDto> findMember(@PathVariable Long memberId) {
+		return ResponseEntity.ok(memberService.findById(memberId));
 	}
 
 	@DeleteMapping("/{memberId}")
-	public void delete(@PathVariable Long memberId) {
+	public ResponseEntity<Void> delete(@PathVariable Long memberId) {
 		memberService.delete(memberId);
+		return ResponseEntity.noContent().build();
 	}
 
 }

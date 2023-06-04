@@ -39,7 +39,7 @@ public class MemberService {
 		Member member = memberRepository.findById(id)
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-		return new MemberResponseDto(member);
+		return MemberResponseDto.of(member);
 	}
 
 	@Transactional
