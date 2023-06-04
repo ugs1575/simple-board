@@ -3,6 +3,7 @@ package com.gamja.board.simpleboard.controller;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,5 +41,10 @@ public class PostApiController {
 	@GetMapping("/posts/{postId}")
 	public PostResponseDto findPost(@PathVariable Long postId) {
 		return postService.findById(postId);
+	}
+
+	@DeleteMapping("/members/{memberId}/posts/{postId}")
+	public void deletePost(@PathVariable Long memberId, @PathVariable Long postId) {
+		postService.delete(memberId, postId);
 	}
 }

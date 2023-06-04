@@ -3,7 +3,6 @@ package com.gamja.board.simpleboard.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gamja.board.simpleboard.dto.MemberResponseDto;
 import com.gamja.board.simpleboard.dto.PostResponseDto;
 import com.gamja.board.simpleboard.dto.PostSaveRequestDto;
 import com.gamja.board.simpleboard.dto.PostUpdateRequestDto;
@@ -58,5 +57,21 @@ public class PostService {
 			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
 		return new PostResponseDto(post);
+	}
+
+	@Transactional
+	public void delete(Long memberId, Long postId) {
+		Post post = postRepository.findByIdFetchJoin(postId)
+			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+		Member author = post.getMember();
+		if (!author.equals(member)) {
+			throw new CustomException(ErrorCode.POST_UNAUTHORIZED);
+		}
+
+		postRepository.deleteById(postId);
 	}
 }
