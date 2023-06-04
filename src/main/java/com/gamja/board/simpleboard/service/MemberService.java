@@ -41,4 +41,12 @@ public class MemberService {
 
 		return new MemberResponseDto(member);
 	}
+
+	@Transactional
+	public void delete(Long id) {
+		Member member = memberRepository.findById(id)
+			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+		memberRepository.deleteById(id);
+	}
 }
