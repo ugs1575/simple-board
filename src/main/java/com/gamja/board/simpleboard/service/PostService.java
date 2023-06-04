@@ -3,6 +3,8 @@ package com.gamja.board.simpleboard.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gamja.board.simpleboard.dto.MemberResponseDto;
+import com.gamja.board.simpleboard.dto.PostResponseDto;
 import com.gamja.board.simpleboard.dto.PostSaveRequestDto;
 import com.gamja.board.simpleboard.dto.PostUpdateRequestDto;
 import com.gamja.board.simpleboard.entity.Member;
@@ -49,5 +51,12 @@ public class PostService {
 		post.update(requestDto.getTitle(), requestDto.getContent());
 
 		return postId;
+	}
+
+	public PostResponseDto findById(Long postId) {
+		Post post = postRepository.findByIdFetchJoin(postId)
+			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+		return new PostResponseDto(post);
 	}
 }

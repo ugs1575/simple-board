@@ -3,6 +3,7 @@ package com.gamja.board.simpleboard.controller;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gamja.board.simpleboard.dto.PostResponseDto;
 import com.gamja.board.simpleboard.dto.PostSaveRequestDto;
 import com.gamja.board.simpleboard.dto.PostUpdateRequestDto;
 import com.gamja.board.simpleboard.service.PostService;
@@ -33,5 +35,10 @@ public class PostApiController {
 	@PatchMapping("/members/{memberId}/posts/{postId}")
 	public Long update(@PathVariable Long memberId, @PathVariable Long postId, @RequestBody @Valid PostUpdateRequestDto requestDto) {
 		return postService.update(memberId, postId, requestDto);
+	}
+
+	@GetMapping("/posts/{postId}")
+	public PostResponseDto findPost(@PathVariable Long postId) {
+		return postService.findById(postId);
 	}
 }
