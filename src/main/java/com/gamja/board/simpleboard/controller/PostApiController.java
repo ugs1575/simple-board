@@ -1,9 +1,11 @@
 package com.gamja.board.simpleboard.controller;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,9 +15,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gamja.board.simpleboard.common.dto.ResultDto;
+import com.gamja.board.simpleboard.dto.MemberResponseDto;
 import com.gamja.board.simpleboard.dto.PostResponseDto;
 import com.gamja.board.simpleboard.dto.PostSaveRequestDto;
 import com.gamja.board.simpleboard.dto.PostUpdateRequestDto;
@@ -47,6 +52,12 @@ public class PostApiController {
 	public ResponseEntity<PostResponseDto> findPost(@PathVariable Long postId) {
 		postService.findById(postId);
 		return ResponseEntity.ok(postService.findById(postId));
+	}
+
+	@GetMapping("/posts")
+	public ResponseEntity<ResultDto<List<PostResponseDto>>> findPosts(Pageable pageable) {
+		List<PostResponseDto> posts = postService.findPosts(pageable);
+		return ResponseEntity.ok(ResultDto.of(posts.size(), posts));
 	}
 
 	@DeleteMapping("/members/{memberId}/posts/{postId}")
