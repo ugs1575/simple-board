@@ -1,5 +1,8 @@
 package com.gamja.board.simpleboard.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +43,13 @@ public class MemberService {
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
 		return MemberResponseDto.of(member);
+	}
+
+	public List<MemberResponseDto> findMembers(String name, Pageable pageable) {
+		List<Member> members = memberRepository.findByNameContaining(name, pageable)
+			.getContent();
+
+		return MemberResponseDto.listOf(members);
 	}
 
 	@Transactional

@@ -1,5 +1,8 @@
 package com.gamja.board.simpleboard.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.gamja.board.simpleboard.entity.Member;
 
 import lombok.AccessLevel;
@@ -15,5 +18,11 @@ public class MemberResponseDto {
 
 	public static MemberResponseDto of(Member member) {
 		return new MemberResponseDto(member.getId(), member.getName());
+	}
+
+	public static List<MemberResponseDto> listOf(List<Member> members) {
+		return members.stream()
+			.map(MemberResponseDto::of)
+			.collect(Collectors.toList());
 	}
 }
