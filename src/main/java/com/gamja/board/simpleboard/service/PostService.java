@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gamja.board.simpleboard.dto.PostForm;
 import com.gamja.board.simpleboard.dto.PostResponseDto;
 import com.gamja.board.simpleboard.dto.PostSaveRequestDto;
 import com.gamja.board.simpleboard.dto.PostUpdateRequestDto;
@@ -29,6 +30,16 @@ public class PostService {
 
 	@Transactional
 	public Long save(Long memberId, PostSaveRequestDto requestDto) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+		Post post = postRepository.save(requestDto.toEntity(member));
+
+		return post.getId();
+	}
+
+	@Transactional
+	public Long save(Long memberId, PostForm requestDto) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -66,6 +77,10 @@ public class PostService {
 		List<Post> posts = postRepository.findAll(pageable).getContent();
 
 		return PostResponseDto.listOf(posts);
+	}
+
+	public List<Post> findPosts() {
+		return postRepository.findAll();
 	}
 
 	@Transactional
