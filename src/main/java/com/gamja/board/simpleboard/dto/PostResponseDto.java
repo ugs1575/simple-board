@@ -1,5 +1,6 @@
 package com.gamja.board.simpleboard.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ public class PostResponseDto {
 	private Long id;
 	private String title;
 	private String content;
+	private LocalDateTime modifiedDate;
 	private MemberResponseDto member;
 
 	public static PostResponseDto of(Post post) {
@@ -23,6 +25,7 @@ public class PostResponseDto {
 			post.getId(),
 			post.getTitle(),
 			post.getContent(),
+			post.getLastModifiedDate(),
 			MemberResponseDto.of(post.getMember())
 		);
 	}

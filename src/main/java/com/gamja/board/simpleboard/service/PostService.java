@@ -39,13 +39,11 @@ public class PostService {
 	}
 
 	@Transactional
-	public Long save(Long memberId, PostForm requestDto) {
+	public void save(Long memberId, PostForm form) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-		Post post = postRepository.save(requestDto.toEntity(member));
-
-		return post.getId();
+		postRepository.save(form.toEntity(member));
 	}
 
 	@Transactional
@@ -66,6 +64,14 @@ public class PostService {
 		return postId;
 	}
 
+	@Transactional
+	public void update(Long postId, PostForm form) {
+		Post post = postRepository.findByIdFetchJoin(postId)
+			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+		post.update(form.getTitle(), form.getContent());
+	}
+
 	public PostResponseDto findById(Long postId) {
 		Post post = postRepository.findByIdFetchJoin(postId)
 			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -77,10 +83,6 @@ public class PostService {
 		List<Post> posts = postRepository.findAll(pageable).getContent();
 
 		return PostResponseDto.listOf(posts);
-	}
-
-	public List<Post> findPosts() {
-		return postRepository.findAll();
 	}
 
 	@Transactional

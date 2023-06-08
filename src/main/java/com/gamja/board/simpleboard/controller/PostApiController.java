@@ -39,7 +39,6 @@ public class PostApiController {
 	public ResponseEntity<Void> save(@PathVariable Long memberId, @RequestBody @Valid PostSaveRequestDto requestDto) {
 		Long saveId = postService.save(memberId, requestDto);
 		return ResponseEntity.created(URI.create("/api/posts/" + saveId)).build();
-
 	}
 
 	@PatchMapping("/members/{memberId}/posts/{postId}")
