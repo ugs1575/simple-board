@@ -2,6 +2,7 @@ package com.gamja.board.simpleboard.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,6 +84,10 @@ public class PostService {
 		List<Post> posts = postRepository.findAll(pageable).getContent();
 
 		return PostResponseDto.listOf(posts);
+	}
+
+	public Page<Post> findPostList(Pageable pageable) {
+		return postRepository.findAll(pageable);
 	}
 
 	@Transactional
