@@ -12,17 +12,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberSaveRequestDto {
 
-	@NotBlank(message = "회원 이름은 필수 입니다.")
+	@NotBlank(message = "회원 이름은 필수 값 입니다.")
 	private String name;
 
-	@Builder
-	public MemberSaveRequestDto(String name) {
+	@NotBlank(message = "아이디는 필수 값 입니다.")
+	private String account;
+
+	@NotBlank(message = "비밀번호는 필수 입니다.")
+	private String password;
+
+	@Builder(toBuilder = true)
+	public MemberSaveRequestDto(String name, String account, String password) {
 		this.name = name;
+		this.account = account;
+		this.password = password;
 	}
 
 	public Member toEntity() {
 		return Member.builder()
 				.name(name)
+				.account(account)
+				.password(password)
 				.build();
 	}
 }

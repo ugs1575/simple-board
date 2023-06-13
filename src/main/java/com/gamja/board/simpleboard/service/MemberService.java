@@ -3,6 +3,7 @@ package com.gamja.board.simpleboard.service;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,6 +11,7 @@ import com.gamja.board.simpleboard.dto.MemberResponseDto;
 import com.gamja.board.simpleboard.dto.MemberSaveRequestDto;
 import com.gamja.board.simpleboard.dto.MemberUpdateRequestDto;
 import com.gamja.board.simpleboard.entity.Member;
+import com.gamja.board.simpleboard.entity.MemberRole;
 import com.gamja.board.simpleboard.exception.CustomException;
 import com.gamja.board.simpleboard.exception.ErrorCode;
 import com.gamja.board.simpleboard.repository.MemberRepository;
@@ -23,9 +25,20 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 
+	private final PasswordEncoder passwordEncoder;
+
+
 	@Transactional
 	public Long save(MemberSaveRequestDto requestDto) {
-		return memberRepository.save(requestDto.toEntity()).getId();
+		String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+
+		Member member = requestDto.toBuilder()
+			.password(encodedPassword)
+			.build()
+			.toEntity();
+
+		member.assignUserRole();
+		return memberRepository.save().getId();
 	}
 
 	@Transactional
