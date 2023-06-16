@@ -15,6 +15,7 @@ import com.gamja.board.simpleboard.entity.MemberRole;
 import com.gamja.board.simpleboard.exception.CustomException;
 import com.gamja.board.simpleboard.exception.ErrorCode;
 import com.gamja.board.simpleboard.repository.MemberRepository;
+import com.gamja.board.simpleboard.repository.RoleRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 
 	private final MemberRepository memberRepository;
-
+	private final RoleRepository roleRepository;
 	private final PasswordEncoder passwordEncoder;
 
 
@@ -32,10 +33,8 @@ public class MemberService {
 	public Long save(MemberSaveRequestDto requestDto) {
 		String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
 
-		Member member = requestDto.toBuilder()
-			.password(encodedPassword)
-			.build()
-			.toEntity();
+		Member member = requestDto.toEntity(encodedPassword);
+		MemberRole.createMemberUserRole(member);
 
 		member.assignUserRole();
 		return memberRepository.save().getId();

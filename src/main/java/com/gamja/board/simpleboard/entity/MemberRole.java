@@ -22,4 +22,8 @@ public class MemberRole extends BaseTimeEntity {
 	@ManyToOne
 	@JoinColumn(name = "role_id")
 	private Role role;
+
+	public static void createMemberUserRole(Member member) {
+
+	}
 }

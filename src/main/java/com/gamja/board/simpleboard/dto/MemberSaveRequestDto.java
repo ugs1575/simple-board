@@ -21,18 +21,18 @@ public class MemberSaveRequestDto {
 	@NotBlank(message = "비밀번호는 필수 입니다.")
 	private String password;
 
-	@Builder(toBuilder = true)
+	@Builder
 	public MemberSaveRequestDto(String name, String account, String password) {
 		this.name = name;
 		this.account = account;
 		this.password = password;
 	}
 
-	public Member toEntity() {
+	public Member toEntity(String encodedPassword) {
 		return Member.builder()
 				.name(name)
 				.account(account)
-				.password(password)
+				.password(encodedPassword)
 				.build();
 	}
 }
