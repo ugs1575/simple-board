@@ -34,9 +34,10 @@ public class PostService {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-		Post post = postRepository.save(requestDto.toEntity(member));
+		Post post = requestDto.toEntity();
+		post.write(member);
 
-		return post.getId();
+		return postRepository.save(post).getId();
 	}
 
 	@Transactional

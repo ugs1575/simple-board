@@ -18,21 +18,17 @@ public class PostSaveRequestDto {
 
 	private String content;
 
-	private Member member;
-
 
 	@Builder
-	public PostSaveRequestDto(String title, String content, Member member) {
+	public PostSaveRequestDto(String title, String content) {
 		this.title = title;
 		this.content = content;
-		this.member = member;
 	}
 
-	public Post toEntity(Member member) {
+	public Post toEntity() {
 		return Post.builder()
 			.title(title)
 			.content(content)
-			.member(member)
 			.build();
 	}
 }
