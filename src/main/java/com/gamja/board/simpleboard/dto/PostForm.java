@@ -15,25 +15,20 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PostForm {
 
-	private Long id;
-
 	@NotBlank(message = "제목은 필수 입니다.")
 	private String title;
 	private String content;
-	private Member member;
 
 	@Builder
-	public PostForm(String title, String content, Member member) {
+	public PostForm(String title, String content) {
 		this.title = title;
 		this.content = content;
-		this.member = member;
 	}
 
-	public Post toEntity(Member member) {
+	public Post toEntity() {
 		return Post.builder()
 			.title(title)
 			.content(content)
-			.member(member)
 			.build();
 	}
 }
