@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.gamja.board.simpleboard.entity.Post;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
 	@Query("select p from Post p join fetch p.member where p.id = :id")
 	Optional<Post> findByIdFetchJoin(@Param("id") Long id);
 }

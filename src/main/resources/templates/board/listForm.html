@@ -10,6 +10,33 @@
         <div class="container">
             <h1>게시판</h1>
             <div>총 건수 : <span th:text="${posts.totalElements}"></span></div>
+            <form
+                class="form-inline d-flex justify-content-end"
+                method="GET"
+                th:action="@{/board/list}"
+            >
+                <div class="form-group mx-sm-3 mb-2">
+                    <label for="author" class="sr-only">검색</label>
+                    <input
+                        type="text"
+                        class="form-control mr-sm-2"
+                        id="author"
+                        name="author"
+                        placeholder="작성자"
+                        th:value="${param.author}"
+                    />
+                    <label for="keyword" class="sr-only">검색</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="keyword"
+                        name="keyword"
+                        placeholder="검색어"
+                        th:value="${param.keyword}"
+                    />
+                </div>
+                <button type="submit" class="btn btn-light mb-2">검색</button>
+            </form>
             <table class="table">
                 <thead>
                     <tr>
@@ -25,12 +52,16 @@
                         <td>
                             <a
                                 th:text="${post.title}"
-                                th:href="@{/board/{boardId}(boardId=${post.id})}"
+                                th:href="@{/board/{boardId}(boardId=${post.postId})}"
                                 >Mark</a
                             >
                         </td>
-                        <td th:text="${post.member.name}">Otto</td>
-                        <td th:text="${post.lastModifiedDate}">@mdo</td>
+                        <td th:text="${post.memberName}">Otto</td>
+                        <td
+                            th:text="${#temporals.format(post.modifiedDate, 'yyyy-MM-dd HH:mm:ss')}"
+                        >
+                            @mdo
+                        </td>
                     </tr>
                 </tbody>
             </table>

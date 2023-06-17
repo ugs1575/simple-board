@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gamja.board.simpleboard.dto.PostForm;
 import com.gamja.board.simpleboard.dto.PostResponseDto;
 import com.gamja.board.simpleboard.dto.PostSaveRequestDto;
+import com.gamja.board.simpleboard.dto.PostSearchCondition;
 import com.gamja.board.simpleboard.dto.PostUpdateRequestDto;
 import com.gamja.board.simpleboard.entity.Member;
 import com.gamja.board.simpleboard.entity.Post;
@@ -90,8 +91,8 @@ public class PostService {
 		return PostResponseDto.listOf(posts);
 	}
 
-	public Page<Post> findPostList(Pageable pageable) {
-		return postRepository.findAll(pageable);
+	public Page<PostResponseDto> getBoard(PostSearchCondition condition, Pageable pageable) {
+		return postRepository.search(condition, pageable);
 	}
 
 	@Transactional

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.gamja.board.simpleboard.dto.PostForm;
 import com.gamja.board.simpleboard.dto.PostResponseDto;
-import com.gamja.board.simpleboard.entity.Post;
+import com.gamja.board.simpleboard.dto.PostSearchCondition;
 import com.gamja.board.simpleboard.service.PostService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,8 +27,8 @@ public class BoardController {
 	private final PostService postService;
 
 	@GetMapping("/board/list")
-	public String list(Model model, @PageableDefault(size = 2) Pageable pageable) {
-		Page<Post> posts = postService.findPostList(pageable);
+	public String list(Model model, PostSearchCondition condition, @PageableDefault(size = 2) Pageable pageable) {
+		Page<PostResponseDto> posts = postService.getBoard(condition, pageable);
 
 		int totalPage = 5;
 		int startPage = (posts.getPageable().getPageNumber() / totalPage) * totalPage + 1;
