@@ -35,7 +35,7 @@ public class Member extends BaseTimeEntity {
 	private boolean deleted;
 
 	@Builder
-	public Member(String name) {
+	private Member(String name) {
 		this.name = name;
 	}
 

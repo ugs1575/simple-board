@@ -16,7 +16,7 @@ public class MemberSaveRequestDto {
 	private String name;
 
 	@Builder
-	public MemberSaveRequestDto(String name) {
+	private MemberSaveRequestDto(String name) {
 		this.name = name;
 	}
 

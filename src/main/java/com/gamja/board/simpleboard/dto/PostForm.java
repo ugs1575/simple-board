@@ -20,7 +20,7 @@ public class PostForm {
 	private String content;
 
 	@Builder
-	public PostForm(String title, String content) {
+	private PostForm(String title, String content) {
 		this.title = title;
 		this.content = content;
 	}

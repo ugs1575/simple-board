@@ -18,7 +18,7 @@ public class PostUpdateRequestDto {
 	private String content;
 
 	@Builder
-	public PostUpdateRequestDto(String title, String content) {
+	private PostUpdateRequestDto(String title, String content) {
 		this.title = title;
 		this.content = content;
 	}

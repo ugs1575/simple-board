@@ -20,7 +20,7 @@ public class PostSaveRequestDto {
 
 
 	@Builder
-	public PostSaveRequestDto(String title, String content) {
+	private PostSaveRequestDto(String title, String content) {
 		this.title = title;
 		this.content = content;
 	}

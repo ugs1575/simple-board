@@ -16,7 +16,7 @@ public class MemberUpdateRequestDto {
 	private String name;
 
 	@Builder
-	public MemberUpdateRequestDto(String name) {
+	private MemberUpdateRequestDto(String name) {
 		this.name = name;
 	}
 
