@@ -39,7 +39,7 @@ public class PostApiController {
 
 	@PatchMapping("/members/{memberId}/posts/{postId}")
 	public ResponseEntity<Void> update(@PathVariable Long memberId, @PathVariable Long postId, @RequestBody @Valid PostUpdateRequestDto requestDto) {
-		postService.update(memberId, postId, requestDto);
+		postService.update(memberId, postId, requestDto.toServiceRequest());
 		return ResponseEntity.ok().build();
 	}
 

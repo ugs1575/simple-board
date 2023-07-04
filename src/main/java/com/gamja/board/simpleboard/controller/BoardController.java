@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.gamja.board.simpleboard.dto.PostForm;
+import com.gamja.board.simpleboard.dto.PostSaveForm;
 import com.gamja.board.simpleboard.dto.PostResponseDto;
 import com.gamja.board.simpleboard.dto.PostSearchCondition;
+import com.gamja.board.simpleboard.dto.PostUpdateForm;
 import com.gamja.board.simpleboard.service.PostService;
 
 import lombok.RequiredArgsConstructor;
@@ -42,18 +43,18 @@ public class BoardController {
 
 	@GetMapping("/board/new")
 	public String createForm(Model model, @RequestParam(required = false) Long id) {
-		model.addAttribute("postForm", new PostForm());
+		model.addAttribute("postForm", new PostSaveForm());
 		return "board/createForm";
 	}
 
 	@PostMapping("/board/new")
-	public String create(@Valid PostForm postForm, BindingResult result) {
+	public String create(@Valid PostSaveForm postSaveForm, BindingResult result) {
 
 		if (result.hasErrors()) {
 			return "board/createForm";
 		}
 
-		postService.save(1L, postForm.toServiceRequest());
+		postService.save(1L, postSaveForm.toServiceRequest());
 		return "redirect:/board/list";
 	}
 
@@ -72,13 +73,14 @@ public class BoardController {
 	}
 
 	@PostMapping("/board/{boardId}/edit")
-	public String update(Model model, @PathVariable Long boardId, @Valid PostForm postForm, BindingResult result) {
+	public String update(Model model, @PathVariable Long boardId, @Valid PostUpdateForm postUpdateForm, BindingResult result) {
 		if (result.hasErrors()) {
-			model.addAttribute("postForm", postForm);
+			model.addAttribute("postForm", postUpdateForm);
 			return "board/updateForm";
 		}
 
-		postService.update(boardId, postForm);
+		//todo: postform save, update 구분
+		postService.update(1L, boardId, postUpdateForm.toServiceRequest());
 		return "redirect:/board/" + boardId;
 	}
 }
