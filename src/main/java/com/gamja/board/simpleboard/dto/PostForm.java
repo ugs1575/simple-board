@@ -25,8 +25,8 @@ public class PostForm {
 		this.content = content;
 	}
 
-	public Post toEntity() {
-		return Post.builder()
+	public PostSaveServiceRequest toServiceRequest() {
+		return PostSaveServiceRequest.builder()
 			.title(title)
 			.content(content)
 			.build();

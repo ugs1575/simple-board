@@ -53,7 +53,7 @@ public class BoardController {
 			return "board/createForm";
 		}
 
-		postService.save(1L, postForm);
+		postService.save(1L, postForm.toServiceRequest());
 		return "redirect:/board/list";
 	}
 

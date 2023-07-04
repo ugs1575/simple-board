@@ -33,7 +33,7 @@ public class PostApiController {
 
 	@PostMapping("/members/{memberId}/posts")
 	public ResponseEntity<Void> save(@PathVariable Long memberId, @RequestBody @Valid PostSaveRequestDto requestDto) {
-		Long saveId = postService.save(memberId, requestDto);
+		Long saveId = postService.save(memberId, requestDto.toServiceRequest());
 		return ResponseEntity.created(URI.create("/api/posts/" + saveId)).build();
 	}
 

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gamja.board.simpleboard.dto.PostForm;
 import com.gamja.board.simpleboard.dto.PostResponseDto;
 import com.gamja.board.simpleboard.dto.PostSaveRequestDto;
+import com.gamja.board.simpleboard.dto.PostSaveServiceRequest;
 import com.gamja.board.simpleboard.dto.PostSearchCondition;
 import com.gamja.board.simpleboard.dto.PostUpdateRequestDto;
 import com.gamja.board.simpleboard.entity.Member;
@@ -31,25 +32,14 @@ public class PostService {
 	private final PostRepository postRepository;
 
 	@Transactional
-	public Long save(Long memberId, PostSaveRequestDto requestDto) {
+	public Long save(Long memberId, PostSaveServiceRequest request) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-		Post post = requestDto.toEntity();
+		Post post = request.toEntity();
 		post.write(member);
 
 		return postRepository.save(post).getId();
-	}
-
-	@Transactional
-	public void save(Long memberId, PostForm form) {
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-		Post post = form.toEntity();
-		post.write(member);
-
-		postRepository.save(post);
 	}
 
 	@Transactional
