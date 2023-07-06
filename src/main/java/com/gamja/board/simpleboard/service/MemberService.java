@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gamja.board.simpleboard.dto.MemberResponseDto;
 import com.gamja.board.simpleboard.dto.MemberSaveRequestDto;
+import com.gamja.board.simpleboard.dto.MemberSaveServiceRequest;
 import com.gamja.board.simpleboard.dto.MemberUpdateRequestDto;
 import com.gamja.board.simpleboard.entity.Member;
 import com.gamja.board.simpleboard.exception.CustomException;
@@ -24,7 +25,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 
 	@Transactional
-	public Long save(MemberSaveRequestDto requestDto) {
+	public Long save(MemberSaveServiceRequest requestDto) {
 		return memberRepository.save(requestDto.toEntity()).getId();
 	}
 

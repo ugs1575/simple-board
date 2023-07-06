@@ -10,19 +10,16 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MemberSaveRequestDto {
-
-	@NotBlank(message = "회원 이름은 필수 입니다.")
+public class MemberSaveServiceRequest {
 	private String name;
 
 	@Builder
-	private MemberSaveRequestDto(String name) {
+	private MemberSaveServiceRequest(String name) {
 		this.name = name;
 	}
 
-
-	public MemberSaveServiceRequest toServiceRequest() {
-		return MemberSaveServiceRequest.builder()
+	public Member toEntity() {
+		return Member.builder()
 			.name(name)
 			.build();
 	}

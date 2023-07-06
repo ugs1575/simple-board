@@ -33,7 +33,7 @@ public class MemberApiController {
 
 	@PostMapping
 	public ResponseEntity<Void> save(@RequestBody @Valid MemberSaveRequestDto requestDto) {
-		Long saveId = memberService.save(requestDto);
+		Long saveId = memberService.save(requestDto.toServiceRequest());
 		return ResponseEntity.created(URI.create("/api/members/" + saveId)).build();
 	}
 
