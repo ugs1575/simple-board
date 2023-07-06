@@ -10,6 +10,7 @@ import com.gamja.board.simpleboard.dto.MemberResponseDto;
 import com.gamja.board.simpleboard.dto.MemberSaveRequestDto;
 import com.gamja.board.simpleboard.dto.MemberSaveServiceRequest;
 import com.gamja.board.simpleboard.dto.MemberUpdateRequestDto;
+import com.gamja.board.simpleboard.dto.MemberUpdateServiceRequest;
 import com.gamja.board.simpleboard.entity.Member;
 import com.gamja.board.simpleboard.exception.CustomException;
 import com.gamja.board.simpleboard.exception.ErrorCode;
@@ -30,7 +31,7 @@ public class MemberService {
 	}
 
 	@Transactional
-	public Long update(Long id, MemberUpdateRequestDto requestDto) {
+	public Long update(Long id, MemberUpdateServiceRequest requestDto) {
 		Member member = memberRepository.findById(id)
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 

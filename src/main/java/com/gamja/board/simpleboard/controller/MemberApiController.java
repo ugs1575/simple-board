@@ -39,7 +39,7 @@ public class MemberApiController {
 
 	@PatchMapping("/{memberId}")
 	public ResponseEntity<Void> update(@PathVariable Long memberId, @RequestBody @Valid MemberUpdateRequestDto requestDto) {
-		memberService.update(memberId, requestDto);
+		memberService.update(memberId, requestDto.toServiceRequest());
 		return ResponseEntity.ok().build();
 	}
 
