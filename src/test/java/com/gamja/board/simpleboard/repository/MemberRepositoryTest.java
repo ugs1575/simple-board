@@ -1,15 +1,12 @@
 package com.gamja.board.simpleboard.repository;
 
-import static org.assertj.core.groups.Tuple.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,20 +25,42 @@ class MemberRepositoryTest extends IntegrationTestSupport {
 	void findByNameContaining() {
 	    //given
 		Member member1 = createMember("우경서");
-		Member member2 = createMember("김경서");
+		Member member2 = createMember("김우경서");
 		Member member3 = createMember("이경서");
 
 		memberRepository.saveAll(List.of(member1, member2, member3));
 
+		PageRequest pageRequest = PageRequest.of(0, 3);
+
 		//when
-		Page<Member> members = memberRepository.findByNameContaining("우", PageRequest.of(0, 2));
+		Page<Member> members = memberRepository.findByNameContaining("우", pageRequest);
 
 		//then
-		Assertions.assertThat(members).hasSize(1)
+		assertThat(members).hasSize(2)
 			.extracting("name")
 			.containsExactlyInAnyOrder(
-				tuple("우경서")
+				"우경서", "김우경서"
 			);
+	}
+
+	@DisplayName("검색된 결과가 없는 경우 빈 page 객체를 반환한다.")
+	@Test
+	void findByNameContainingNoResult() {
+		//given
+		Member member1 = createMember("우경서");
+		Member member2 = createMember("김우경서");
+		Member member3 = createMember("이경서");
+
+		memberRepository.saveAll(List.of(member1, member2, member3));
+
+		PageRequest pageRequest = PageRequest.of(0, 3);
+
+		//when
+		Page<Member> members = memberRepository.findByNameContaining("차", pageRequest);
+
+		//then
+		assertThat(members).hasSize(0);
+		assertThat(members.getContent()).isEmpty();
 	}
 
 	private Member createMember(String name) {

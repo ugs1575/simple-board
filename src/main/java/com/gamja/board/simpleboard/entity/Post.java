@@ -37,8 +37,7 @@ public class Post extends BaseTimeEntity {
 	private Member member;
 
 	@Builder
-	private Post(Long id, String title, String content, Member member) {
-		this.id = id;
+	private Post(String title, String content, Member member) {
 		this.title = title;
 		this.content = content;
 		this.member = member;
