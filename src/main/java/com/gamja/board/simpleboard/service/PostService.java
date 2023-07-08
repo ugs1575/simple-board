@@ -49,9 +49,9 @@ public class PostService {
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
 		Member author = post.getMember();
-		// if (!author.equals(member)) {
-		// 	throw new CustomException(ErrorCode.POST_UNAUTHORIZED);
-		// }
+		if (!author.equals(member)) {
+			throw new CustomException(ErrorCode.POST_UNAUTHORIZED);
+		}
 
 		post.update(request.getTitle(), request.getContent());
 
