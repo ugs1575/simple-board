@@ -1,120 +1,215 @@
 package com.gamja.board.simpleboard.controller;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 
-import com.gamja.board.simpleboard.dto.PostSaveRequestDto;
-import com.gamja.board.simpleboard.dto.PostUpdateRequestDto;
-import com.gamja.board.simpleboard.entity.Member;
-import com.gamja.board.simpleboard.entity.Post;
-import com.gamja.board.simpleboard.repository.MemberRepository;
-import com.gamja.board.simpleboard.repository.PostRepository;
+import com.gamja.board.simpleboard.ControllerTestSupport;
+import com.gamja.board.simpleboard.dto.MemberUpdateRequestDto;
+import com.gamja.board.simpleboard.dto.PostResponseDto;
+import com.gamja.board.simpleboard.dto.PostSaveServiceRequest;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class PostApiControllerTest {
+class PostApiControllerTest extends ControllerTestSupport {
 
-	@LocalServerPort
-	private int port;
-
-	@Autowired
-	private TestRestTemplate restTemplate;
-
-	@Autowired
-	private MemberRepository memberRepository;
-
-	@Autowired
-	private PostRepository postRepository;
-
-	private Member member;
-
-	@BeforeEach
-	public void setUp() {
-		member = memberRepository.save(Member.builder()
-			.name("우경서")
-			.build());
-	}
-
-	@AfterEach
-	public void afterEach() {
-		postRepository.deleteAll();
-		memberRepository.deleteAll();
-	}
-
-
+	@DisplayName("글을 작성한다.")
 	@Test
-	public void 게시글을_작성한다() throws Exception {
-	    //given
-		String expectedTitle = "제목1";
-		String expectedContent = "테스트";
-
-		PostSaveRequestDto requestDto = PostSaveRequestDto.builder()
-															.title(expectedTitle)
-															.content(expectedContent)
-															.build();
-
-		String url = "http://localhost:" + port + "/api/members/" + member.getId() + "/posts";
-
-	    //when
-		ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
-
-	    //then
-		assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-		assertThat(responseEntity.getBody()).isGreaterThan(0L);
-
-		List<Post> all = postRepository.findAll();
-		assertThat(all.get(0).getTitle()).isEqualTo(expectedTitle);
-		assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
-		assertThat(all.get(0).getMember().getId()).isEqualTo(member.getId());
-	}
-
-	@Test
-	public void 게시글을_수정한다() throws Exception {
-		//given
-		Post post = postRepository.save(Post.builder()
+	void createPost() throws Exception {
+		PostSaveServiceRequest requestDto = PostSaveServiceRequest.builder()
 			.title("제목1")
-			.content("글내용1")
-			.member(member)
-			.build());
-
-		String expectedTitle = "제목1_수정";
-		String expectedContent = "글내용1_수정";
-
-		PostUpdateRequestDto requestDto = PostUpdateRequestDto.builder()
-			.title(expectedTitle)
-			.content(expectedContent)
+			.content("내용1")
 			.build();
 
-		String url = "http://localhost:" + port + "/api/members/" + member.getId() + "/posts/" + post.getId();
+		given(postService.save(anyLong(), any(PostSaveServiceRequest.class))).willReturn(1L);
 
-		HttpEntity<PostUpdateRequestDto> requestHttpEntity = new HttpEntity<>(requestDto);
-
-		//when
-		ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PATCH, requestHttpEntity, Long.class);
-
-		//then
-		assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-		assertThat(responseEntity.getBody()).isEqualTo(post.getId());
-
-		List<Post> all = postRepository.findAll();
-		assertThat(all.get(0).getTitle()).isEqualTo(expectedTitle);
-		assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
+		//when //then
+		mockMvc.perform(
+				post("/api/members/{memberId}/posts", 1L)
+					.content(objectMapper.writeValueAsString(requestDto))
+					.contentType(MediaType.APPLICATION_JSON)
+			)
+			.andDo(print())
+			.andExpect(status().isCreated())
+			.andExpect(header().string("Location", "/api/posts/1"));
 	}
 
+	@DisplayName("신규 게시글 등록 시 제목은 필수 값입니다.")
+	@Test
+	void createPostWithoutTitle() throws Exception {
+		//given
+		PostSaveServiceRequest requestDto = PostSaveServiceRequest.builder()
+			.content("내용1")
+			.build();
+
+		//when //then
+		mockMvc.perform(
+				post("/api/members/{memberId}/posts", 1L)
+					.content(objectMapper.writeValueAsString(requestDto))
+					.contentType(MediaType.APPLICATION_JSON)
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.status").value("400"))
+			.andExpect(jsonPath("$.statusName").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.code").value("INVALID_INPUT_VALUE"))
+			.andExpect(jsonPath("$.message").value("입력값이 올바르지 않습니다."))
+			.andExpect(jsonPath("$.fieldErrors[0].field").value("title"))
+			.andExpect(jsonPath("$.fieldErrors[0].message").value("제목은 필수 입니다."))
+		;
+
+	}
+
+	@DisplayName("게시글을 수정한다.")
+	@Test
+	void updatePost() throws Exception {
+		//given
+		PostSaveServiceRequest requestDto = PostSaveServiceRequest.builder()
+			.content("내용1")
+			.build();
+
+		//when //then
+		mockMvc.perform(
+				patch("/api/members/{memberId}/posts/{postId}", 1L, 1L)
+					.content(objectMapper.writeValueAsString(requestDto))
+					.contentType(MediaType.APPLICATION_JSON)
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.status").value("400"))
+			.andExpect(jsonPath("$.statusName").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.code").value("INVALID_INPUT_VALUE"))
+			.andExpect(jsonPath("$.message").value("입력값이 올바르지 않습니다."))
+			.andExpect(jsonPath("$.fieldErrors[0].field").value("title"))
+			.andExpect(jsonPath("$.fieldErrors[0].message").value("제목은 필수 입니다."));
+	}
+
+	@DisplayName("게시글 수정 시 제목은 필수 값이다.")
+	@Test
+	void updatePostWithoutTitle() throws Exception {
+		//given
+		MemberUpdateRequestDto requestDto = MemberUpdateRequestDto.builder()
+			.build();
+
+		//when //then
+		mockMvc.perform(
+				patch("/api/members/{memberId}/posts/{postId}", 1L, 1L)
+					.content(objectMapper.writeValueAsString(requestDto))
+					.contentType(MediaType.APPLICATION_JSON)
+			)
+			.andDo(print())
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.status").value("400"))
+			.andExpect(jsonPath("$.statusName").value("BAD_REQUEST"))
+			.andExpect(jsonPath("$.code").value("INVALID_INPUT_VALUE"))
+			.andExpect(jsonPath("$.message").value("입력값이 올바르지 않습니다."))
+			.andExpect(jsonPath("$.fieldErrors[0].field").value("title"))
+			.andExpect(jsonPath("$.fieldErrors[0].message").value("제목은 필수 입니다."));
+	}
+
+	@DisplayName("회원정보를 조회한다.")
+	@Test
+	void findPost() throws Exception {
+		//given
+		LocalDateTime now = LocalDateTime.now();
+
+		given(postService.findById(anyLong()))
+			.willReturn(
+				PostResponseDto.builder()
+					.postId(1L)
+					.title("제목")
+					.content("내용")
+					.modifiedDate(now)
+					.memberId(1L)
+					.memberName("우경서")
+					.build()
+			);
+
+		//when //then
+		mockMvc.perform(
+				get("/api/posts/{postId}", 1L)
+					.accept(MediaType.APPLICATION_JSON)
+			)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.postId").value(1L))
+			.andExpect(jsonPath("$.title").value("제목"))
+			.andExpect(jsonPath("$.content").value("내용"))
+			.andExpect(jsonPath("$.modifiedDate").value(now.toString()))
+			.andExpect(jsonPath("$.memberId").value(1L))
+			.andExpect(jsonPath("$.memberName").value("우경서"));
+	}
+
+	@DisplayName("모든 게시물을 조회한다.")
+	@Test
+	void findPosts() throws Exception {
+		//given
+		LocalDateTime now = LocalDateTime.now();
+
+		PostResponseDto responseDto1 = PostResponseDto.builder()
+			.postId(1L)
+			.title("제목")
+			.content("내용")
+			.modifiedDate(now)
+			.memberId(1L)
+			.memberName("우경서")
+			.build();
 
 
+		PostResponseDto responseDto2 = PostResponseDto.builder()
+			.postId(2L)
+			.title("제목2")
+			.content("내용2")
+			.modifiedDate(now)
+			.memberId(1L)
+			.memberName("우경서")
+			.build();
 
+		given(postService.findPosts(any(Pageable.class)))
+			.willReturn(List.of(responseDto1, responseDto2));
 
+		//when //then
+		mockMvc.perform(
+				get("/api/posts")
+					.param("size", "3")
+					.accept(MediaType.APPLICATION_JSON)
+			)
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.count").value(2))
+			.andExpect(jsonPath("$.data[0]postId").value(1L))
+			.andExpect(jsonPath("$.data[0]title").value("제목"))
+			.andExpect(jsonPath("$.data[0]content").value("내용"))
+			.andExpect(jsonPath("$.data[0]modifiedDate").value(now.toString()))
+			.andExpect(jsonPath("$.data[0]memberId").value(1L))
+			.andExpect(jsonPath("$.data[0]memberName").value("우경서"))
+			.andExpect(jsonPath("$.data[1]postId").value(2L))
+			.andExpect(jsonPath("$.data[1]title").value("제목2"))
+			.andExpect(jsonPath("$.data[1]content").value("내용2"))
+			.andExpect(jsonPath("$.data[1]modifiedDate").value(now.toString()))
+			.andExpect(jsonPath("$.data[1]memberId").value(1L))
+			.andExpect(jsonPath("$.data[1]memberName").value("우경서"));
+	}
+
+	@DisplayName("게시글을 삭제한다.")
+	@Test
+	void deletePost() throws Exception {
+		//given
+		doNothing().when(postService).delete(anyLong(), anyLong());
+
+		//when //then
+		mockMvc.perform(
+				delete("/api/members/{memberId}/posts/{postId}", 1L, 1L)
+			)
+			.andDo(print())
+			.andExpect(status().isNoContent());
+	}
 }

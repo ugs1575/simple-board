@@ -9,6 +9,7 @@ import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -21,6 +22,7 @@ public class PostResponseDto {
 	private Long memberId;
 	private String memberName;
 
+	@Builder
 	@QueryProjection
 	public PostResponseDto(Long postId, String title, String content, LocalDateTime modifiedDate, Long memberId,
 		String memberName) {
@@ -33,14 +35,14 @@ public class PostResponseDto {
 	}
 
 	public static PostResponseDto of(Post post) {
-		return new PostResponseDto(
-			post.getId(),
-			post.getTitle(),
-			post.getContent(),
-			post.getLastModifiedDate(),
-			post.getMember().getId(),
-			post.getMember().getName()
-		);
+		return PostResponseDto.builder()
+			.postId(post.getId())
+			.title(post.getTitle())
+			.content(post.getContent())
+			.modifiedDate(post.getLastModifiedDate())
+			.memberId(post.getMember().getId())
+			.memberName(post.getMember().getName())
+			.build();
 	}
 
 	public static List<PostResponseDto> listOf(List<Post> posts) {

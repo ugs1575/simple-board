@@ -1,6 +1,6 @@
 server:
   port:
-    8088
+    8084
 
 spring:
   profiles:
