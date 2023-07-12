@@ -1,6 +1,7 @@
 package com.gamja.board.simpleboard.controller;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -33,7 +34,7 @@ public class PostApiController {
 
 	@PostMapping("/members/{memberId}/posts")
 	public ResponseEntity<Void> save(@PathVariable Long memberId, @RequestBody @Valid PostSaveRequestDto requestDto) {
-		Long saveId = postService.save(memberId, requestDto.toServiceRequest());
+		Long saveId = postService.save(memberId, requestDto.toServiceRequest(), LocalDateTime.now());
 		return ResponseEntity.created(URI.create("/api/posts/" + saveId)).build();
 	}
 

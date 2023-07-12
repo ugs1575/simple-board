@@ -1,5 +1,7 @@
 package com.gamja.board.simpleboard.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,15 +38,19 @@ public class Post extends BaseTimeEntity {
 	@JoinColumn(name = "member_id")
 	private Member member;
 
+	private LocalDateTime registeredDateTime;
+
 	@Builder
-	private Post(String title, String content, Member member) {
+	private Post(String title, String content, LocalDateTime registeredDateTime, Member member) {
 		this.title = title;
 		this.content = content;
+		this.registeredDateTime = registeredDateTime;
 		this.member = member;
 	}
 
-	public void write(Member member) {
+	public void write(Member member, LocalDateTime registeredDateTime) {
 		this.member = member;
+		this.registeredDateTime = registeredDateTime;
 	}
 
 	public void update(String title, String content) {

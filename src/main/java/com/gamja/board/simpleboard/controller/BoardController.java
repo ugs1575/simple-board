@@ -1,5 +1,7 @@
 package com.gamja.board.simpleboard.controller;
 
+import java.time.LocalDateTime;
+
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -54,7 +56,7 @@ public class BoardController {
 			return "board/createForm";
 		}
 
-		postService.save(1L, postSaveForm.toServiceRequest());
+		postService.save(1L, postSaveForm.toServiceRequest(), LocalDateTime.now());
 		return "redirect:/board/list";
 	}
 

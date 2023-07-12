@@ -18,18 +18,18 @@ public class PostResponseDto {
 	private Long postId;
 	private String title;
 	private String content;
-	private LocalDateTime modifiedDate;
+	private LocalDateTime registeredDateTime;
 	private Long memberId;
 	private String memberName;
 
 	@Builder
 	@QueryProjection
-	public PostResponseDto(Long postId, String title, String content, LocalDateTime modifiedDate, Long memberId,
+	public PostResponseDto(Long postId, String title, String content, LocalDateTime registeredDateTime, Long memberId,
 		String memberName) {
 		this.postId = postId;
 		this.title = title;
 		this.content = content;
-		this.modifiedDate = modifiedDate;
+		this.registeredDateTime = registeredDateTime;
 		this.memberId = memberId;
 		this.memberName = memberName;
 	}
@@ -39,7 +39,7 @@ public class PostResponseDto {
 			.postId(post.getId())
 			.title(post.getTitle())
 			.content(post.getContent())
-			.modifiedDate(post.getLastModifiedDate())
+			.registeredDateTime(post.getRegisteredDateTime())
 			.memberId(post.getMember().getId())
 			.memberName(post.getMember().getName())
 			.build();

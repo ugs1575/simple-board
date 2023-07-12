@@ -3,8 +3,8 @@ package com.gamja.board.simpleboard.service;
 import static com.gamja.board.simpleboard.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,21 +49,23 @@ class PostServiceTest extends IntegrationTestSupport {
 		Member member = createMember("우경서");
 		memberRepository.save(member);
 
+		LocalDateTime now = LocalDateTime.now();
+
 		PostSaveServiceRequest request = PostSaveServiceRequest.builder()
 			.title("제목1")
 			.content("내용1")
 			.build();
 
 		//when
-		Long postId = postService.save(member.getId(), request);
+		Long postId = postService.save(member.getId(), request, now);
 
 		//then
 		assertThat(postId).isNotNull();
 		List<Post> posts = postRepository.findAll();
 		assertThat(posts).hasSize(1)
-			.extracting("title", "content", "member.id")
+			.extracting("title", "content", "registeredDateTime", "member.id")
 			.containsExactly(
-				tuple("제목1", "내용1", member.getId())
+				tuple("제목1", "내용1", now, member.getId())
 			);
 	}
 
@@ -71,13 +73,15 @@ class PostServiceTest extends IntegrationTestSupport {
 	@Test
 	void createPostByNotExistedMember() {
 		//given
+		LocalDateTime now = LocalDateTime.now();
+
 		PostSaveServiceRequest request = PostSaveServiceRequest.builder()
 			.title("제목1")
 			.content("내용1")
 			.build();
 
 		//when
-		assertThatThrownBy(() -> postService.save(1L, request))
+		assertThatThrownBy(() -> postService.save(1L, request, now))
 			.isInstanceOf(CustomException.class)
 			.hasMessage(MEMBER_NOT_FOUND.getMessage());
 	}
@@ -87,7 +91,7 @@ class PostServiceTest extends IntegrationTestSupport {
 	void updatePost() {
 	    //given
 		Member member = createMember("우경서");
-		Post post = createPost("제목1", "내용1", member);
+		Post post = createPost("제목1", "내용1", LocalDateTime.now(), member);
 
 		memberRepository.save(member);
 		postRepository.save(post);
@@ -101,12 +105,12 @@ class PostServiceTest extends IntegrationTestSupport {
 		Long postId = postService.update(member.getId(), post.getId(), request);
 
 		//then
-		assertThat(postId).isEqualTo(member.getId());
+		assertThat(postId).isEqualTo(post.getId());
 		List<Post> posts = postRepository.findAll();
 		assertThat(posts).hasSize(1)
-			.extracting("title", "content", "member.id")
+			.extracting("title", "content")
 			.containsExactly(
-				tuple("제목_수정", "내용_수정", member.getId())
+				tuple("제목_수정", "내용_수정")
 			);
 	}
 
@@ -134,7 +138,7 @@ class PostServiceTest extends IntegrationTestSupport {
 		//given
 		Member member1 = createMember("우경서");
 		Member member2 = createMember("김경서");
-		Post post = createPost("제목1", "내용1", member1);
+		Post post = createPost("제목1", "내용1", LocalDateTime.now(), member1);
 
 		memberRepository.saveAll(List.of(member1, member2));
 		postRepository.save(post);
@@ -154,8 +158,10 @@ class PostServiceTest extends IntegrationTestSupport {
 	@Test
 	void findPostById() {
 	    //given
+		LocalDateTime now = LocalDateTime.now();
+
 		Member member = createMember("우경서");
-		Post post = createPost("제목1", "내용1", member);
+		Post post = createPost("제목1", "내용1", now, member);
 
 		memberRepository.save(member);
 		postRepository.save(post);
@@ -164,9 +170,9 @@ class PostServiceTest extends IntegrationTestSupport {
 		PostResponseDto findPost = postService.findById(post.getId());
 
 		//then
-		assertThat(findPost).extracting("postId", "title", "content", "memberId", "memberName")
+		assertThat(findPost).extracting("postId", "title", "content", "registeredDateTime", "memberId", "memberName")
 			.containsExactly(
-				post.getId(), "제목1", "내용1", member.getId(), member.getName()
+				post.getId(), "제목1", "내용1", now, member.getId(), member.getName()
 			);
 	}
 
@@ -182,11 +188,13 @@ class PostServiceTest extends IntegrationTestSupport {
 	@Test
 	void findPosts() {
 		//given
+		LocalDateTime now = LocalDateTime.now();
+
 		Member member1 = createMember("우경서");
-		Post post1 = createPost("제목1", "내용1", member1);
+		Post post1 = createPost("제목1", "내용1", now, member1);
 
 		Member member2 = createMember("김경서");
-		Post post2 = createPost("제목2", "내용2", member2);
+		Post post2 = createPost("제목2", "내용2", now, member2);
 
 
 		memberRepository.saveAll(List.of(member1, member2));
@@ -198,10 +206,10 @@ class PostServiceTest extends IntegrationTestSupport {
 		List<PostResponseDto> posts = postService.findPosts(pageRequest);
 
 		//then
-		assertThat(posts).extracting("postId", "title", "content", "memberId", "memberName")
+		assertThat(posts).extracting("postId", "title", "content", "registeredDateTime", "memberId", "memberName")
 			.containsExactly(
-				tuple(post1.getId(), "제목1", "내용1", member1.getId(), member1.getName()),
-				tuple(post2.getId(), "제목2", "내용2", member2.getId(), member2.getName())
+				tuple(post1.getId(), "제목1", "내용1", now, member1.getId(), member1.getName()),
+				tuple(post2.getId(), "제목2", "내용2", now, member2.getId(), member2.getName())
 			);
 	}
 
@@ -223,13 +231,15 @@ class PostServiceTest extends IntegrationTestSupport {
 	@Test
 	void searchPostsByAuthorNameAndKeyword() {
 		//given
+		LocalDateTime now = LocalDateTime.now();
+
 		Member member1 = createMember("우경서");
-		Post post1 = createPost("제목1", "내용1", member1);
-		Post post2 = createPost("제목1", "내용2", member1);
-		Post post3 = createPost("제목2", "내용3", member1);
+		Post post1 = createPost("제목1", "내용1", now, member1);
+		Post post2 = createPost("제목1", "내용2", now, member1);
+		Post post3 = createPost("제목2", "내용3", now, member1);
 
 		Member member2 = createMember("김경서");
-		Post post4 = createPost("제목4", "내용4", member2);
+		Post post4 = createPost("제목4", "내용4", now, member2);
 
 		memberRepository.saveAll(List.of(member1, member2));
 		postRepository.saveAll(List.of(post1, post2, post3, post4));
@@ -257,13 +267,15 @@ class PostServiceTest extends IntegrationTestSupport {
 	@Test
 	void searchPostsByAuthorNameAndKeywordNoResult() {
 		//given
+		LocalDateTime now = LocalDateTime.now();
+
 		Member member1 = createMember("우경서");
-		Post post1 = createPost("제목1", "내용1", member1);
-		Post post2 = createPost("제목1", "내용2", member1);
-		Post post3 = createPost("제목2", "내용3", member1);
+		Post post1 = createPost("제목1", "내용1", now, member1);
+		Post post2 = createPost("제목1", "내용2", now, member1);
+		Post post3 = createPost("제목2", "내용3", now, member1);
 
 		Member member2 = createMember("김경서");
-		Post post4 = createPost("제목4", "내용4", member2);
+		Post post4 = createPost("제목4", "내용4", now, member2);
 
 		memberRepository.saveAll(List.of(member1, member2));
 		postRepository.saveAll(List.of(post1, post2, post3, post4));
@@ -289,7 +301,7 @@ class PostServiceTest extends IntegrationTestSupport {
 	void deletePost() {
 	    //given
 		Member member = createMember("우경서");
-		Post post = createPost("제목1", "내용1", member);
+		Post post = createPost("제목1", "내용1", LocalDateTime.now(), member);
 
 		memberRepository.save(member);
 		postRepository.save(post);
@@ -309,7 +321,7 @@ class PostServiceTest extends IntegrationTestSupport {
 		//given
 		Member member1 = createMember("우경서");
 		Member member2 = createMember("김경서");
-		Post post = createPost("제목1", "내용1", member1);
+		Post post = createPost("제목1", "내용1", LocalDateTime.now(), member1);
 
 		memberRepository.saveAll(List.of(member1, member2));
 		postRepository.save(post);
@@ -326,10 +338,11 @@ class PostServiceTest extends IntegrationTestSupport {
 			.build();
 	}
 
-	private Post createPost(String title, String content, Member member) {
+	private Post createPost(String title, String content, LocalDateTime registeredDateTime, Member member) {
 		return Post.builder()
 			.title(title)
 			.content(content)
+			.registeredDateTime(registeredDateTime)
 			.member(member)
 			.build();
 	}

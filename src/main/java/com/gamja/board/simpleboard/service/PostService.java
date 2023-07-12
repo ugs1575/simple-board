@@ -1,5 +1,6 @@
 package com.gamja.board.simpleboard.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -30,12 +31,12 @@ public class PostService {
 	private final PostRepository postRepository;
 
 	@Transactional
-	public Long save(Long memberId, PostSaveServiceRequest request) {
+	public Long save(Long memberId, PostSaveServiceRequest request, LocalDateTime registeredDateTime) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
 		Post post = request.toEntity();
-		post.write(member);
+		post.write(member, registeredDateTime);
 
 		return postRepository.save(post).getId();
 	}
