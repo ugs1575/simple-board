@@ -45,11 +45,11 @@ class MemberServiceTest extends IntegrationTestSupport {
 		Long memberId = memberService.save(memberRequest);
 
 		//then
-		assertThat(memberId).isGreaterThan(0L);
-
-		Optional<Member> member = memberRepository.findById(memberId);
-		assertThat(member.isPresent()).isTrue();
-		assertThat(member.get().getName()).isEqualTo("우경서");
+		assertThat(memberId).isNotNull();
+		List<Member> members = memberRepository.findAll();
+		assertThat(members).hasSize(1)
+			.extracting("name")
+			.containsExactly("우경서");
 	}
 
 	@DisplayName("회원 정보를 수정하면 수정된 정보가 저장된다.")
@@ -68,13 +68,13 @@ class MemberServiceTest extends IntegrationTestSupport {
 
 		//then
 		assertThat(memberId).isEqualTo(member.getId());
-
-		Optional<Member> updateMember = memberRepository.findById(memberId);
-		assertThat(updateMember.isPresent()).isTrue();
-		assertThat(updateMember.get().getName()).isEqualTo("김경서");
+		List<Member> members = memberRepository.findAll();
+		assertThat(members).hasSize(1)
+			.extracting("name")
+			.containsExactly("김경서");
 	}
 
-	@DisplayName("존재하지 않는 회원은 회원 정보를 수정할 수 없다.")
+	@DisplayName("존재하지 않는 회원은 회원 정보 수정시 예외가 발생한다.")
 	@Test
 	void updateNotExistedMember() {
 		//given
@@ -113,7 +113,7 @@ class MemberServiceTest extends IntegrationTestSupport {
 			.hasMessage(MEMBER_NOT_FOUND.getMessage());
 	}
 	
-	@DisplayName("회원이름으로 검색조건에 맞는 회원 목록을 조회한다.")
+	@DisplayName("회원명으로 검색조건에 맞는 회원 목록을 조회한다.")
 	@Test
 	void findMembersByName() {
 		//given
@@ -152,11 +152,10 @@ class MemberServiceTest extends IntegrationTestSupport {
 		List<MemberResponseDto> members = memberService.findMembers("박", pageRequest);
 
 		//then
-		assertThat(members).hasSize(0)
-			.isEmpty();
+		assertThat(members).isEmpty();
 	}
 	
-	@DisplayName("회원 정보를 삭제 후 조회할 경우 빈객체를 반환한다.")
+	@DisplayName("회원 정보를 삭제한다.")
 	@Test
 	void deleteMember() {
 		//given
@@ -167,8 +166,9 @@ class MemberServiceTest extends IntegrationTestSupport {
 		memberService.delete(member.getId());
 
 		//then
-		Optional<Member> byId = memberRepository.findById(member.getId());
-		assertThat(byId).isEmpty();
+		List<Member> members = memberRepository.findAll();
+		assertThat(members).hasSize(0)
+			.isEmpty();
 	}
 
 	@DisplayName("존재하지 않는 회원은 삭제 시도 시 예외가 발생한다.")

@@ -58,12 +58,12 @@ class PostServiceTest extends IntegrationTestSupport {
 		Long postId = postService.save(member.getId(), request);
 
 		//then
-		Optional<Post> post = postRepository.findById(postId);
-
-		assertThat(post.isPresent()).isTrue();
-		assertThat(post.get()).extracting("title", "content", "member.id")
+		assertThat(postId).isNotNull();
+		List<Post> posts = postRepository.findAll();
+		assertThat(posts).hasSize(1)
+			.extracting("title", "content", "member.id")
 			.containsExactly(
-				"제목1", "내용1", member.getId()
+				tuple("제목1", "내용1", member.getId())
 			);
 	}
 
@@ -101,20 +101,20 @@ class PostServiceTest extends IntegrationTestSupport {
 		Long postId = postService.update(member.getId(), post.getId(), request);
 
 		//then
-		Optional<Post> updatePost = postRepository.findById(postId);
-
-		assertThat(updatePost.isPresent()).isTrue();
-		assertThat(updatePost.get()).extracting("title", "content")
-			.containsExactly("제목_수정", "내용_수정");
-
+		assertThat(postId).isEqualTo(member.getId());
+		List<Post> posts = postRepository.findAll();
+		assertThat(posts).hasSize(1)
+			.extracting("title", "content", "member.id")
+			.containsExactly(
+				tuple("제목_수정", "내용_수정", member.getId())
+			);
 	}
 
 	@DisplayName("존재하지 않는 게시글은 게시글 수정 시 예외가 발생한다.")
 	@Test
-	void updatePostByNotExistedPost() {
+	void updatePostByNotExistedMember() {
 		//given
 		Member member = createMember("우경서");
-
 		memberRepository.save(member);
 
 		PostUpdateServiceRequest request = PostUpdateServiceRequest.builder()
@@ -178,7 +178,7 @@ class PostServiceTest extends IntegrationTestSupport {
 			.hasMessage(POST_NOT_FOUND.getMessage());
 	}
 
-	@DisplayName("모든 게시물 조회 시 게시물 목록을 반환한다.")
+	@DisplayName("모든 게시물 목록을 반환한다.")
 	@Test
 	void findPosts() {
 		//given
@@ -211,15 +211,17 @@ class PostServiceTest extends IntegrationTestSupport {
 		//given
 		PageRequest pageRequest = PageRequest.of(0, 3);
 
+		//when
 		List<PostResponseDto> posts = postService.findPosts(pageRequest);
 
-		//when, then
-		assertThat(posts).isEmpty();
+		//then
+		assertThat(posts).hasSize(0)
+			.isEmpty();
 	}
 
 	@DisplayName("작성자 명, 제목 또는 글에 포함된 키워드로 검색 조건에 맞는 게시물을 조회한다.")
 	@Test
-	void searchPostsByAuthorAndKeyword() {
+	void searchPostsByAuthorNameAndKeyword() {
 		//given
 		Member member1 = createMember("우경서");
 		Post post1 = createPost("제목1", "내용1", member1);
@@ -253,7 +255,7 @@ class PostServiceTest extends IntegrationTestSupport {
 
 	@DisplayName("작성자 명과 키워드로 검색된 결과가 없는 경우 빈 page 객체를 반환한다.")
 	@Test
-	void searchPostsByAuthorAndKeywordNoResult() {
+	void searchPostsByAuthorNameAndKeywordNoResult() {
 		//given
 		Member member1 = createMember("우경서");
 		Post post1 = createPost("제목1", "내용1", member1);
@@ -282,7 +284,7 @@ class PostServiceTest extends IntegrationTestSupport {
 
 	}
 
-	@DisplayName("게시글 삭제 시 게시글 조회하면 빈 객체를 반환한다.")
+	@DisplayName("게시글 삭제한다.")
 	@Test
 	void deletePost() {
 	    //given
@@ -296,9 +298,9 @@ class PostServiceTest extends IntegrationTestSupport {
 		postService.delete(member.getId(), post.getId());
 
 	    //then
-		Optional<Post> deletePost = postRepository.findById(post.getId());
-
-		assertThat(deletePost.isEmpty()).isTrue();
+		List<Post> posts = postRepository.findAll();
+		assertThat(posts).hasSize(0)
+			.isEmpty();
 	}
 
 	@DisplayName("게시글 작성자가 아닌 회원은 게시글을 삭제할 수 없다.")
