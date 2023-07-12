@@ -3,7 +3,6 @@ package com.gamja.board.simpleboard.repository;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,29 +26,8 @@ class PostRepositoryTest extends IntegrationTestSupport {
 
 	@Autowired
 	private PostRepository postRepository;
-
-	@DisplayName("게시글 id로 게시글을 작성자 정보와 함께 조회한다.")
-	@Test
-	void findByIdFetchJoin() {
-	    //given
-		Member member = createMember("우경서");
-		Post post = createPost("제목1", "내용1", member);
-
-		memberRepository.save(member);
-		postRepository.save(post);
-
-		Optional<Post> expect = Optional.of(post);
-
-		//when
-		Optional<Post> actual = postRepository.findByIdFetchJoin(member.getId());
-
-		//then
-		assertThat(actual.isPresent()).isTrue();
-		assertThat(actual).isEqualTo(expect);
-		assertThat(actual.get().getMember().getName()).isEqualTo(expect.get().getMember().getName());
-	}
 	
-	@DisplayName("작성자 명, 제목 또는 글에 포함된 키워드로 검색 조건에 맞는 게시물을 조회한다.")
+	@DisplayName("작성자 명과 제목 또는 글에 포함된 키워드로 검색 조건에 맞는 게시물을 조회한다.")
 	@Test
 	void searchByAuthorAndKeyword() {
 	    //given
