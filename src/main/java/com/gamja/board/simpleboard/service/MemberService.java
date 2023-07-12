@@ -48,7 +48,7 @@ public class MemberService {
 	}
 
 	public List<MemberResponseDto> findMembers(String name, Pageable pageable) {
-		List<Member> members = memberRepository.findByNameContaining(name, pageable)
+		List<Member> members = memberRepository.findByNameContainingIgnoreCase(name, pageable)
 			.getContent();
 
 		return MemberResponseDto.listOf(members);

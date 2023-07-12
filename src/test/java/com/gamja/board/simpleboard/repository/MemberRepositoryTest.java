@@ -33,7 +33,7 @@ class MemberRepositoryTest extends IntegrationTestSupport {
 		PageRequest pageRequest = PageRequest.of(0, 3);
 
 		//when
-		Page<Member> members = memberRepository.findByNameContaining("우", pageRequest);
+		Page<Member> members = memberRepository.findByNameContainingIgnoreCase("우", pageRequest);
 
 		//then
 		assertThat(members).hasSize(2)
@@ -56,7 +56,7 @@ class MemberRepositoryTest extends IntegrationTestSupport {
 		PageRequest pageRequest = PageRequest.of(0, 3);
 
 		//when
-		Page<Member> members = memberRepository.findByNameContaining("차", pageRequest);
+		Page<Member> members = memberRepository.findByNameContainingIgnoreCase("차", pageRequest);
 
 		//then
 		assertThat(members).hasSize(0);

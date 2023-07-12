@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.gamja.board.simpleboard.entity.Member;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-	Page<Member> findByNameContaining(String name, Pageable pageable);
+	Page<Member> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }
