@@ -7,12 +7,14 @@ import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.gamja.board.simpleboard.dto.PostSaveForm;
@@ -44,8 +46,8 @@ public class BoardController {
 	}
 
 	@GetMapping("/board/new")
-	public String createForm(Model model, @RequestParam(required = false) Long id) {
-		model.addAttribute("postForm", new PostSaveForm());
+	public String createForm(Model model) {
+		model.addAttribute("postSaveForm", new PostSaveForm());
 		return "board/createForm";
 	}
 
@@ -61,9 +63,17 @@ public class BoardController {
 	}
 
 	@GetMapping("/board/{boardId}")
-	public String findBoard(Model model, @PathVariable Long boardId) {
+	public String findBoard(
+		@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+		Model model,
+		@PathVariable Long boardId
+	) {
 		PostResponseDto post = postService.findById(boardId);
 		model.addAttribute("postForm", post);
+
+		if(referrer != null ) {
+			model.addAttribute("previousUrl", referrer);
+		}
 		return "board/detailForm";
 	}
 
@@ -81,7 +91,6 @@ public class BoardController {
 			return "board/updateForm";
 		}
 
-		//todo: postform save, update 구분
 		postService.update(1L, boardId, postUpdateForm.toServiceRequest());
 		return "redirect:/board/" + boardId;
 	}
