@@ -7,12 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PostSearchCondition {
-	private String author;
+	private String memberName;
 	private String keyword;
 
 	@Builder
-	private PostSearchCondition(String author, String keyword) {
-		this.author = author;
+	private PostSearchCondition(String memberName, String keyword) {
+		this.memberName = memberName;
 		this.keyword = keyword;
 	}
 }

@@ -16,14 +16,14 @@
                 th:action="@{/board/list}"
             >
                 <div class="form-group mx-sm-3 mb-2">
-                    <label for="author" class="sr-only">검색</label>
+                    <label for="memberName" class="sr-only">검색</label>
                     <input
                         type="text"
                         class="form-control mr-sm-2"
-                        id="author"
-                        name="author"
+                        id="memberName"
+                        name="memberName"
                         placeholder="작성자"
-                        th:value="${param.author}"
+                        th:value="${param.memberName}"
                     />
                     <label for="keyword" class="sr-only">검색</label>
                     <input
@@ -58,7 +58,7 @@
                         </td>
                         <td th:text="${post.memberName}">Otto</td>
                         <td
-                            th:text="${#temporals.format(post.modifiedDate, 'yyyy-MM-dd HH:mm:ss')}"
+                            th:text="${#temporals.format(post.registeredDateTime, 'yyyy-MM-dd HH:mm:ss')}"
                         >
                             @mdo
                         </td>
@@ -76,7 +76,7 @@
                     >
                         <a
                             class="page-link"
-                            th:href="@{/board/list(page=${posts.pageable.pageNumber - 1})}"
+                            th:href="@{/board/list(page=${posts.pageable.pageNumber - 1}, memberName=${param.memberName}, keyword=${param.keyword})}"
                             >Previous</a
                         >
                     </li>
@@ -88,7 +88,7 @@
                         <a
                             class="page-link"
                             href="#"
-                            th:href="@{/board/list(page=${i - 1})}"
+                            th:href="@{/board/list(page=${i - 1}, memberName=${param.memberName}, keyword=${param.keyword})}"
                             th:text="${i}"
                             >1</a
                         >
@@ -99,7 +99,7 @@
                     >
                         <a
                             class="page-link"
-                            th:href="@{/board/list(page=${posts.pageable.pageNumber + 1})}"
+                            th:href="@{/board/list(page=${posts.pageable.pageNumber + 1}, memberName=${param.memberName}, keyword=${param.keyword})}"
                             >Next</a
                         >
                     </li>

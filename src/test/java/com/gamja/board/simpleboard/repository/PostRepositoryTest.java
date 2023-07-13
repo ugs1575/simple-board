@@ -43,7 +43,7 @@ class PostRepositoryTest extends IntegrationTestSupport {
 		postRepository.saveAll(List.of(post1, post2, post3, post4));
 
 		PostSearchCondition searchCondition = PostSearchCondition.builder()
-			.author("우경서")
+			.memberName("우경서")
 			.keyword("2")
 			.build();
 
@@ -77,7 +77,7 @@ class PostRepositoryTest extends IntegrationTestSupport {
 		postRepository.saveAll(List.of(post1, post2, post3, post4));
 
 		PostSearchCondition searchCondition = PostSearchCondition.builder()
-			.author("박경서")
+			.memberName("박경서")
 			.keyword("5")
 			.build();
 

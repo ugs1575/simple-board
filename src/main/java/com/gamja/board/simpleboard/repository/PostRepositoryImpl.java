@@ -41,7 +41,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 			.from(post)
 			.join(post.member, member)
 			.where(
-				memberNameEq(condition.getAuthor()),
+				memberNameEq(condition.getMemberName()),
 				keywordEq(condition.getKeyword())
 			)
 			.offset(pageable.getOffset())
@@ -53,7 +53,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 			.from(post)
 			.join(post.member, member)
 			.where(
-				memberNameEq(condition.getAuthor()),
+				memberNameEq(condition.getMemberName()),
 				keywordEq(condition.getKeyword())
 			);
 
@@ -67,6 +67,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
 	private BooleanExpression memberNameEq(String memberName) {
 		return hasText(memberName) ?
-			member.name.eq(memberName) : null;
+			member.name.contains(memberName) : null;
 	}
 }
