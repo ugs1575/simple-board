@@ -1,0 +1,9 @@
+[[member-delete]]
+=== 회원 정보 삭제
+
+==== HTTP Request
+include::{snippets}/member/delete/http-request.adoc[]
+include::{snippets}/member/delete/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/member/delete/http-response.adoc[]

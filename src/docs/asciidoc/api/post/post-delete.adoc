@@ -1,0 +1,9 @@
+[[post-delete]]
+=== 게시글 삭제
+
+==== HTTP Request
+include::{snippets}/post/delete/http-request.adoc[]
+include::{snippets}/post/delete/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/post/delete/http-response.adoc[]

@@ -1,0 +1,28 @@
+ifndef::snippets[]
+:snippets: ../../build/generated-snippets
+endif::[]
+= Simple Board REST API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[Member-API]]
+== Member API
+
+include::api/member/member-create.adoc[]
+include::api/member/member-update.adoc[]
+include::api/member/member-find.adoc[]
+include::api/member/member-findAll.adoc[]
+include::api/member/member-delete.adoc[]
+
+[[Post-API]]
+== Post API
+
+include::api/post/post-create.adoc[]
+include::api/post/post-update.adoc[]
+include::api/post/post-find.adoc[]
+include::api/post/post-findAll.adoc[]
+include::api/post/post-delete.adoc[]

@@ -1,0 +1,10 @@
+[[post-findAll]]
+=== 게시글 목록 조회
+
+==== HTTP Request
+include::{snippets}/post/findAll/http-request.adoc[]
+include::{snippets}/post/findAll/request-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/post/findAll/http-response.adoc[]
+include::{snippets}/post/findAll/response-fields.adoc[]

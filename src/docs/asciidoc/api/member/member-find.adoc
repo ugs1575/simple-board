@@ -1,0 +1,10 @@
+[[member-find]]
+=== 회원 정보 조회
+
+==== HTTP Request
+include::{snippets}/member/find/http-request.adoc[]
+include::{snippets}/member/find/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/member/find/http-response.adoc[]
+include::{snippets}/member/find/response-fields.adoc[]
