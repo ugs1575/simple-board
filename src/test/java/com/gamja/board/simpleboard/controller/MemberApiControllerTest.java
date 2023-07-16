@@ -6,13 +6,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
 import com.gamja.board.simpleboard.ControllerTestSupport;
 import com.gamja.board.simpleboard.dto.MemberSaveRequestDto;
 import com.gamja.board.simpleboard.dto.MemberUpdateRequestDto;
+import com.gamja.board.simpleboard.service.MemberService;
 
 class MemberApiControllerTest extends ControllerTestSupport {
+
+	@MockBean
+	protected MemberService memberService;
 
 	@DisplayName("신규 회원 등록 시 이름은 필수 값이다.")
 	@Test

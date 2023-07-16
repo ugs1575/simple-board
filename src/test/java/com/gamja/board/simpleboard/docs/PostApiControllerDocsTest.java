@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -25,12 +26,8 @@ import com.gamja.board.simpleboard.service.PostService;
 
 class PostApiControllerDocsTest extends RestDocsSupport {
 
-	private final PostService postService = mock(PostService.class);
-
-	@Override
-	protected Object initController() {
-		return new PostApiController(postService);
-	}
+	@MockBean
+	protected PostService postService;
 
 	@DisplayName("게시글을 작성한다.")
 	@Test

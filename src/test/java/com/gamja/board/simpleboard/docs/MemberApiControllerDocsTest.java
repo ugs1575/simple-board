@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -23,12 +24,8 @@ import com.gamja.board.simpleboard.service.MemberService;
 
 public class MemberApiControllerDocsTest extends RestDocsSupport {
 
-	private final MemberService memberService = mock(MemberService.class);
-
-	@Override
-	protected Object initController() {
-		return new MemberApiController(memberService);
-	}
+	@MockBean
+	protected MemberService memberService;
 
 	@DisplayName("신규 회원을 등록한다.")
 	@Test

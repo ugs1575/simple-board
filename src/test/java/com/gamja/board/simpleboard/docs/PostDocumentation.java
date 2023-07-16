@@ -6,8 +6,6 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 
-import java.time.LocalDateTime;
-
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 
@@ -56,7 +54,7 @@ public class PostDocumentation {
 				fieldWithPath("postId").type(JsonFieldType.NUMBER).description("게시글 ID"),
 				fieldWithPath("title").type(JsonFieldType.STRING).description("게시글 제목"),
 				fieldWithPath("content").type(JsonFieldType.STRING).description("게시글 내용"),
-				fieldWithPath("registeredDateTime").type(JsonFieldType.ARRAY).description("게시글 등록일"),
+				fieldWithPath("registeredDateTime").type(JsonFieldType.STRING).description("게시글 등록일"),
 				fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("작성자 ID"),
 				fieldWithPath("memberName").type(JsonFieldType.STRING).description("작성자명")
 			));
@@ -80,7 +78,7 @@ public class PostDocumentation {
 					.description("게시글 제목"),
 				fieldWithPath("data.[].content").type(JsonFieldType.STRING)
 					.description("게시글 내용"),
-				fieldWithPath("data.[].registeredDateTime").type(JsonFieldType.ARRAY)
+				fieldWithPath("data.[].registeredDateTime").type(JsonFieldType.STRING)
 					.description("게시글 등록일"),
 				fieldWithPath("data.[].memberId").type(JsonFieldType.NUMBER)
 					.description("작성자 ID"),

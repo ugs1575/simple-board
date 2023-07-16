@@ -6,13 +6,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
 import com.gamja.board.simpleboard.ControllerTestSupport;
 import com.gamja.board.simpleboard.dto.PostSaveServiceRequest;
 import com.gamja.board.simpleboard.dto.PostUpdateServiceRequest;
+import com.gamja.board.simpleboard.service.PostService;
 
 class PostApiControllerTest extends ControllerTestSupport {
+
+	@MockBean
+	protected PostService postService;
 
 	@DisplayName("신규 게시글 등록 시 제목은 필수 값입니다.")
 	@Test

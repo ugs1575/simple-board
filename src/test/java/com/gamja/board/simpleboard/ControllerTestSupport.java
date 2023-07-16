@@ -24,11 +24,4 @@ public abstract class ControllerTestSupport {
 
 	@Autowired
 	protected ObjectMapper objectMapper;
-
-	@MockBean
-	protected MemberService memberService;
-
-	@MockBean
-	protected PostService postService;
-
 }
