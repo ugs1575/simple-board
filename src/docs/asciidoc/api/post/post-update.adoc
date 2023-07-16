@@ -1,0 +1,10 @@
+[[post-update]]
+=== 게시글 수정
+
+==== HTTP Request
+include::{snippets}/post/update/http-request.adoc[]
+include::{snippets}/post/update/path-parameters.adoc[]
+include::{snippets}/post/update/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/post/update/http-response.adoc[]

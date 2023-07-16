@@ -80,7 +80,7 @@ class PostServiceTest extends IntegrationTestSupport {
 			.content("내용1")
 			.build();
 
-		//when
+		//when //then
 		assertThatThrownBy(() -> postService.save(1L, request, now))
 			.isInstanceOf(CustomException.class)
 			.hasMessage(MEMBER_NOT_FOUND.getMessage());

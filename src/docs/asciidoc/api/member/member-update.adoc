@@ -4,7 +4,7 @@
 ==== HTTP Request
 include::{snippets}/member/update/http-request.adoc[]
 include::{snippets}/member/update/path-parameters.adoc[]
-include::{snippets}/member/update/request-body.adoc[]
+include::{snippets}/member/update/request-fields.adoc[]
 
 ==== HTTP Response
 include::{snippets}/member/update/http-response.adoc[]

@@ -17,3 +17,12 @@ include::api/member/member-update.adoc[]
 include::api/member/member-find.adoc[]
 include::api/member/member-findAll.adoc[]
 include::api/member/member-delete.adoc[]
+
+[[Post-API]]
+== Post API
+
+include::api/post/post-create.adoc[]
+include::api/post/post-update.adoc[]
+include::api/post/post-find.adoc[]
+include::api/post/post-findAll.adoc[]
+include::api/post/post-delete.adoc[]
