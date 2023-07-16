@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -22,6 +23,7 @@ import com.gamja.board.simpleboard.dto.MemberSaveServiceRequest;
 import com.gamja.board.simpleboard.dto.MemberUpdateRequestDto;
 import com.gamja.board.simpleboard.service.MemberService;
 
+@WebMvcTest(controllers = MemberApiController.class)
 public class MemberApiControllerDocsTest extends RestDocsSupport {
 
 	@MockBean

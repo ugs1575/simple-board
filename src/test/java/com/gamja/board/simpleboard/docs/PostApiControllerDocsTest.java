@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -24,6 +25,7 @@ import com.gamja.board.simpleboard.dto.PostSaveServiceRequest;
 import com.gamja.board.simpleboard.dto.PostUpdateServiceRequest;
 import com.gamja.board.simpleboard.service.PostService;
 
+@WebMvcTest(controllers = PostApiController.class)
 class PostApiControllerDocsTest extends RestDocsSupport {
 
 	@MockBean
