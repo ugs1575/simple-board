@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gamja.board.simpleboard.dto.PostSaveForm;
 import com.gamja.board.simpleboard.dto.PostResponseDto;
@@ -52,14 +53,16 @@ public class BoardController {
 	}
 
 	@PostMapping("/board/new")
-	public String create(@Valid PostSaveForm postSaveForm, BindingResult result) {
+	public String create(@Valid PostSaveForm postSaveForm, BindingResult result, RedirectAttributes redirectAttributes) {
 
 		if (result.hasErrors()) {
 			return "board/createForm";
 		}
 
-		postService.save(1L, postSaveForm.toServiceRequest(), LocalDateTime.now());
-		return "redirect:/board/list";
+		Long postId = postService.save(1L, postSaveForm.toServiceRequest(), LocalDateTime.now());
+		redirectAttributes.addAttribute("postId", postId);
+		redirectAttributes.addAttribute("status", true);
+		return "redirect:/board/{postId}";
 	}
 
 	@GetMapping("/board/{boardId}")
@@ -92,6 +95,6 @@ public class BoardController {
 		}
 
 		postService.update(1L, boardId, postUpdateForm.toServiceRequest());
-		return "redirect:/board/" + boardId;
+		return "redirect:/board/{boardId}";
 	}
 }

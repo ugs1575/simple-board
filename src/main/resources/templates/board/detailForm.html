@@ -9,6 +9,7 @@
 
         <div class="container">
             <h1>게시판</h1>
+            <h2 th:if="${param.status}" th:text="'글이 등록되었습니다.'"></h2>
             <form th:object="${postForm}">
                 <div class="form-group">
                     <label th:for="title">제목</label>
